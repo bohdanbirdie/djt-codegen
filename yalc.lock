@@ -1,0 +1,8 @@
+{
+  "version": "v1",
+  "packages": {
+    "djt-codegen": {
+      "signature": "36a754cabb03de9f0890c41369ec68a0"
+    }
+  }
+}

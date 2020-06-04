@@ -1,0 +1,26 @@
+{
+  "name": "djt-codegen",
+  "description": "Templated Codegen tool for Dart-to-JS-Transpiler (DJT)",
+  "author": {
+    "name": "Bohdan Ptyts",
+    "url": "https://github.com/bohdanbirdie"
+  },
+  "version": "1.0.0-36a754ca",
+  "main": "build/index.js",
+  "license": "MIT",
+  "bin": {
+    "djt-codegen": "./build/index.js"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "start": "babel-node src/index.js",
+    "build": "babel src -d build",
+    "cli": "babel src -d build && node ./build/index.js"
+  },
+  "dependencies": {
+    "commander": "^5.1.0",
+    "typescript": "^3.9.3"
+  }
+}
