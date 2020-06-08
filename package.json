@@ -29,6 +29,7 @@
     "cli": "babel src -d build && node ./build/index.js"
   },
   "dependencies": {
+    "camelcase": "^6.0.0",
     "commander": "^5.1.0",
     "typescript": "^3.9.3"
   }

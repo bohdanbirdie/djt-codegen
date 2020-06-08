@@ -93,10 +93,11 @@ var Method = /*#__PURE__*/function () {
 exports.Method = Method;
 
 var ClassTemplate = /*#__PURE__*/function () {
-  function ClassTemplate(className, schema) {
+  function ClassTemplate(className, schema, importName) {
     _classCallCheck(this, ClassTemplate);
 
     this.className = className;
+    this.importName = importName;
     this.methods = [];
     this.defaultConstructorMethod = schema.defaultConstructorMethod;
     this.defaultConstructorName = schema.defaultConstructorName;
@@ -115,10 +116,11 @@ var ClassTemplate = /*#__PURE__*/function () {
   }, {
     key: "toString",
     value: function toString() {
+      var importName = this.importName;
       var header = "export class ".concat(this.className, " {\n");
       var instanceDefinition = 'private _instance;';
       var methodsWrapperDefinition = 'private _methods: Record<string, Function>;';
-      var constructorBody = "\n  this._instance = node_bind.".concat(this.defaultConstructorName, "(").concat(makePositionalArgs(this.defaultConstructorMethod.positionalArgs, false).join(', '), ");\n  this._methods = node_bind.OtherThingMethodsMapper(this._instance);");
+      var constructorBody = "\n  this._instance = ".concat(importName, ".").concat(this.defaultConstructorName, "(").concat(makePositionalArgs(this.defaultConstructorMethod.positionalArgs, false).join(', '), ");\n  this._methods = ").concat(importName, ".OtherThingMethodsMapper(this._instance);");
       var constructor = new Method(this.defaultConstructorMethod, constructorBody);
       var footer = "\n}";
       return [header, instanceDefinition, methodsWrapperDefinition, constructor.toString(), this.methods.map(function (method) {

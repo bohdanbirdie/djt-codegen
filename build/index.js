@@ -11,6 +11,8 @@ var _path = _interopRequireDefault(require("path"));
 
 var _commander = require("commander");
 
+var _camelcase = _interopRequireDefault(require("./camelcase"));
+
 var _pathValidator = require("./path-validator");
 
 var _classTemplate = require("./class-template");
@@ -33,7 +35,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-_commander.program.requiredOption("-s, --schema <path>").requiredOption("-o, --output <path> ").option("-dts, --dts-output <path> ").option("-i, --import <name> ").parse(process.argv);
+_commander.program.requiredOption("-s, --schema <path>").requiredOption("-o, --output <path> ").requiredOption("-i, --import <name> ").option("-dts, --dts-output <path> ").parse(process.argv);
 
 var terminateInvalidPath = function terminateInvalidPath(paramName, pathString) {
   if (!pathString) {
@@ -62,8 +64,9 @@ var output = _path["default"].resolve(process.cwd(), _commander.program.output);
 var _require = require(schemaPath),
     schema = _require.schema;
 
-var classes = ["import * as node_bind from './node_bind.dart';", "export { node_bind };"].concat(_toConsumableArray(Object.keys(schema).map(function (classItem) {
-  var item = new _classTemplate.ClassTemplate(classItem, schema[classItem]);
+var importName = (0, _camelcase["default"])(_commander.program["import"]);
+var classes = ["import * as ".concat(importName, " from './").concat(_commander.program["import"], ".dart';"), "export { ".concat(importName, " };")].concat(_toConsumableArray(Object.keys(schema).map(function (classItem) {
+  var item = new _classTemplate.ClassTemplate(classItem, schema[classItem], importName);
   schema[classItem].methodsList.forEach(function (element) {
     item.addMethod(element);
   });

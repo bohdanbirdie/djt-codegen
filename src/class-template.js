@@ -65,8 +65,9 @@ export class Method {
 }
 
 export class ClassTemplate {
-  constructor(className, schema) {
+  constructor(className, schema, importName) {
     this.className = className;
+    this.importName = importName;
     this.methods = [];
     this.defaultConstructorMethod = schema.defaultConstructorMethod;
     this.defaultConstructorName = schema.defaultConstructorName;
@@ -82,12 +83,13 @@ export class ClassTemplate {
   }
 
   toString() {
+    const importName = this.importName;
     const header = `export class ${this.className} {\n`;
     const instanceDefinition = 'private _instance;';
     const methodsWrapperDefinition = 'private _methods: Record<string, Function>;';
     const constructorBody = `
-  this._instance = node_bind.${this.defaultConstructorName}(${makePositionalArgs(this.defaultConstructorMethod.positionalArgs, false).join(', ')});
-  this._methods = node_bind.OtherThingMethodsMapper(this._instance);`;
+  this._instance = ${importName}.${this.defaultConstructorName}(${makePositionalArgs(this.defaultConstructorMethod.positionalArgs, false).join(', ')});
+  this._methods = ${importName}.OtherThingMethodsMapper(this._instance);`;
     const constructor = new Method(this.defaultConstructorMethod, constructorBody);
     const footer = "\n}";
 

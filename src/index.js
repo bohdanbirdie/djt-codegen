@@ -4,6 +4,7 @@ import * as ts from "typescript";
 import fs from "fs";
 import path from "path";
 import { program } from "commander";
+import camelcase from './camelcase';
 
 import { validatePath } from "./path-validator";
 import { ClassTemplate } from "./class-template";
@@ -11,8 +12,8 @@ import { ClassTemplate } from "./class-template";
 program
   .requiredOption("-s, --schema <path>")
   .requiredOption("-o, --output <path> ")
+  .requiredOption("-i, --import <name> ")
   .option("-dts, --dts-output <path> ")
-  .option("-i, --import <name> ")
   .parse(process.argv);
 
 const terminateInvalidPath = (paramName, pathString) => {
@@ -34,12 +35,13 @@ terminateInvalidPath("--dts-output", program.dtsOutput);
 const schemaPath = path.resolve(process.cwd(), program.schema);
 const output = path.resolve(process.cwd(), program.output);
 const { schema } = require(schemaPath);
+const importName = camelcase(program.import);
 
 const classes = [
-  "import * as node_bind from './node_bind.dart';",
-  "export { node_bind };",
+  `import * as ${importName} from './${program.import}.dart';`,
+  `export { ${importName} };`,
   ...Object.keys(schema).map((classItem) => {
-    const item = new ClassTemplate(classItem, schema[classItem]);
+    const item = new ClassTemplate(classItem, schema[classItem], importName);
     schema[classItem].methodsList.forEach((element) => {
       item.addMethod(element);
     });
